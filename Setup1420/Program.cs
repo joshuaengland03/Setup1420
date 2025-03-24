@@ -18,7 +18,10 @@ namespace program
 
             var manual = JsonSerializer.Deserialize<ZombieSurvivalJournal>(text);
 
-            List<string> ignore = new List<string> { "the", "and", "is", "in", "of", "to", "a", "we", "it", "for", "on", "with" , "i", "an"};
+            List<string> ignore = new List<string> 
+            { 
+                "the", "and", "is", "in", "of", "to", "a", "we", "it", "for", "on", "with" , "i", "an", "are", "no", "but", "was"
+            };
 
             Dictionary<string, int> keyWords = new Dictionary<string, int>();
 
@@ -28,7 +31,7 @@ namespace program
 
                 foreach (var word in words)
                 {
-                    string result = word.Replace("!", "").Replace(".", "").Replace(",", "");
+                    string result = word.Replace("!", "").Replace(".", "").Replace(",", "").Trim();
                     if (ignore.Contains(word))
                     {
                         continue;
@@ -45,7 +48,10 @@ namespace program
                 }
             }
 
-            foreach (var word in keyWords)
+
+            var topWords = keyWords.OrderByDescending(x => x.Value).Take(5);
+
+            foreach (var word in topWords)
             {
                 Console.WriteLine($"{word.Key} {word.Value}");
             }
