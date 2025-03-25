@@ -63,15 +63,7 @@ public class SpyToolkit
     {
         var activeGadgets = GetActiveGadgets();
 
-        bool allPowerOk = PowerCheck(activeGadgets, requiredPower);
-
-        if (activeGadgets.Any() && allPowerOk)
-        {
-            Console.WriteLine($"Mission {missionName}: Ready.");
-        }
-        else
-        {
-            Console.WriteLine($"Mission {missionName}: Insufficient power.");
-        }
+        bool missionReady = activeGadgets.Any() && PowerCheck(activeGadgets, requiredPower);
+        Console.WriteLine($"Mission {missionName}: {(missionReady ? "Ready." : "Insufficient power.")}");
     }
 }
