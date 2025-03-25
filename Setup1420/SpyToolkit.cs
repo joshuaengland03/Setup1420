@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DemoSolution;
 
-
-namespace DemoSolution
-{
     public class SpyToolkit
     {
         private readonly List<SpyGadget> gadgets = new List<SpyGadget>();
@@ -66,4 +64,3 @@ namespace DemoSolution
 
         }
     }
-}
