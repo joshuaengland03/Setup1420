@@ -3,64 +3,76 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using DemoSolution;
 
-    public class SpyToolkit
+public class SpyToolkit
+{
+    private readonly List<SpyGadget> gadgets = new List<SpyGadget>();
+
+    public SpyToolkit() { }
+
+    public void AddGadget(string name, string category, int powerLevel = 50, bool isActive = true)
     {
-        private readonly List<SpyGadget> gadgets = new List<SpyGadget>();
-
-        public SpyToolkit() { }
-
-        public void AddGadget(string name, string category, int powerLevel = 50, bool isActive = true)
+        if (gadgets.Any(g => g.Name == name))
         {
-            if (gadgets.Any(g => g.Name == name))
-            {
-                Console.WriteLine($"{name} already exists.");
-                return;
-            }
-            gadgets.Add(new SpyGadget { Name = name, Category = category, PowerLevel = powerLevel, IsActive = isActive });
-            Console.WriteLine($"{name} added to toolkit.");
+            Console.WriteLine($"{name} already exists.");
+            return;
         }
+        gadgets.Add(new SpyGadget { Name = name, Category = category, PowerLevel = powerLevel, IsActive = isActive });
+        Console.WriteLine($"{name} added to toolkit.");
+    }
 
-        public List<SpyGadget> GetActiveGadgets(string category = null)
+    public List<SpyGadget> GetActiveGadgets(string category = null)
+    {
+        return gadgets.Where(s => s.IsActive && (category == null || s.Category == category)).ToList();
+
+    }
+
+    public void DeactivateGadget(string name)
+    {
+        SpyGadget gadget = new SpyGadget();
+        gadget = null;
+
+        foreach (var gadgets in gadgets)
         {
-            return gadgets.Where(s => s.IsActive && (category == null || s.Category == category)).ToList();
-
-        }
-
-        public void DeactivateGadget(string name)
-        {
-            SpyGadget gadget = new SpyGadget();
-            gadget = null;
-
-            foreach (var gadgets in gadgets)
+            if (gadgets.Name == name)
             {
-                if (gadgets.Name == name)
-                {
-                    gadget = gadgets;
-                    break;
-                }
-            }
-
-            if (gadget != null)
-            {
-                Console.WriteLine($"{name} deactivated.");
-                gadget.IsActive = false;
-            }
-            else
-            {
-                Console.WriteLine($"{name} not found.");
+                gadget = gadgets;
+                break;
             }
         }
 
-        public static bool PowerCheck(List<SpyGadget> gadgets, int minPower)
+        if (gadget != null)
         {
-            return false;
+            Console.WriteLine($"{name} deactivated.");
+            gadget.IsActive = false;
         }
-
-
-        public void DebugMission(string missionName, int requiredPower)
+        else
         {
-
+            Console.WriteLine($"{name} not found.");
         }
     }
+
+    public static bool PowerCheck(List<SpyGadget> gadgets, int minPower)
+    {
+        return gadgets.All(g => g.PowerLevel >= minPower);
+    }
+
+
+    public void DebugMission(string missionName, int requiredPower)
+    {
+        var activeGadgets = GetActiveGadgets();
+
+        bool allPowerOk = PowerCheck(activeGadgets, requiredPower);
+
+        if (activeGadgets.Any() && allPowerOk)
+        {
+            Console.WriteLine($"Mission {missionName}: Ready.");
+        }
+        else
+        {
+            Console.WriteLine($"Mission {missionName}: Insufficient power.");
+        }
+    }
+}
